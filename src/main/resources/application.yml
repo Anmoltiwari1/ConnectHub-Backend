@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: presence-service
+  datasource:
+    url: jdbc:h2:mem:presencedb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 8085
