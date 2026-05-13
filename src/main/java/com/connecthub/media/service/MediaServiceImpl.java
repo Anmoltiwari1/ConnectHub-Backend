@@ -1,6 +1,7 @@
 package com.connecthub.media.service;
 
 import com.connecthub.media.entity.MediaFile;
+import com.connecthub.media.exception.MediaException;
 import com.connecthub.media.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
@@ -105,7 +106,7 @@ public class MediaServiceImpl implements MediaService {
             }
             return baseUrl + "/" + thumbKey;
         } catch (IOException e) {
-            throw new RuntimeException("Thumbnail generation failed", e);
+            throw new MediaException("Thumbnail generation failed", e);
         }
     }
 
@@ -131,7 +132,7 @@ public class MediaServiceImpl implements MediaService {
                         RequestBody.fromBytes(file.getBytes()));
             }
         } catch (IOException e) {
-            throw new RuntimeException("File save failed", e);
+            throw new MediaException("File save failed", e);
         }
     }
 

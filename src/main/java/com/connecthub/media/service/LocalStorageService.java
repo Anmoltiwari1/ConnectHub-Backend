@@ -10,24 +10,27 @@ import java.nio.file.Paths;
 @Component
 public class LocalStorageService {
 
-    private final String uploadDir = "uploads/";
+    private static final String UPLOAD_DIR = "uploads/";
 
     public LocalStorageService() {
-        File dir = new File(uploadDir);
+        File dir = new File(UPLOAD_DIR);
         if (!dir.exists()) dir.mkdirs();
-        new File(uploadDir + "files").mkdirs();
-        new File(uploadDir + "images").mkdirs();
-        new File(uploadDir + "thumbnails").mkdirs();
+        new File(UPLOAD_DIR + "files").mkdirs();
+        new File(UPLOAD_DIR + "images").mkdirs();
+        new File(UPLOAD_DIR + "thumbnails").mkdirs();
     }
 
     public void save(String key, byte[] content) throws IOException {
-        Path path = Paths.get(uploadDir + key);
+        Path path = Paths.get(UPLOAD_DIR + key);
         Files.createDirectories(path.getParent());
         Files.write(path, content);
     }
 
     public void delete(String key) {
-        File file = new File(uploadDir + key);
-        if (file.exists()) file.delete();
+        try {
+            Files.deleteIfExists(Paths.get(UPLOAD_DIR + key));
+        } catch (IOException e) {
+            // Log or handle error
+        }
     }
 }
