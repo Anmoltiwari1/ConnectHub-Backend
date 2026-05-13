@@ -15,7 +15,7 @@ public interface RoomService {
     List<Room> getRoomsByUser(String userId);
     Room updateRoom(String roomId, String name, String description, String avatarUrl, int maxMembers);
     void deleteRoom(String roomId);
-    RoomMember addMember(String roomId, String userId, String username, MemberRole role);
+    RoomMember addMember(String roomId, String userId, String username, String fullName, String avatarUrl, MemberRole role);
     void removeMember(String roomId, String userId);
     List<RoomMember> getMembers(String roomId);
     RoomMember updateMemberRole(String roomId, String userId, MemberRole role);

@@ -15,6 +15,6 @@ public interface RoomRepository extends JpaRepository<Room, String> {
     List<Room> findByCreatedById(String createdById);
     List<Room> findByType(RoomType type);
 
-    @Query("SELECT r FROM Room r JOIN RoomMember m ON r.roomId = m.roomId WHERE m.userId = :userId ORDER BY r.lastMessageAt DESC")
+    @Query("SELECT DISTINCT r FROM Room r JOIN RoomMember m ON r.roomId = m.roomId WHERE m.userId = :userId ORDER BY r.lastMessageAt DESC")
     List<Room> findRoomsByUserId(@Param("userId") String userId);
 }

@@ -59,6 +59,7 @@ public class RoomResource {
     @PostMapping("/{roomId}/members")
     public ResponseEntity<RoomMember> addMember(@PathVariable String roomId, @RequestBody Map<String, String> req) {
         return ResponseEntity.ok(roomService.addMember(roomId, req.get("userId"), req.get("username"),
+                req.get("fullName"), req.get("avatarUrl"),
                 MemberRole.valueOf(req.getOrDefault("role", "MEMBER"))));
     }
 

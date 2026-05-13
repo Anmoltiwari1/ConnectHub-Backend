@@ -15,10 +15,14 @@ public class RoomServiceApplication {
     public org.springframework.boot.CommandLineRunner seeder(com.connecthub.room.service.RoomService roomService) {
         return args -> {
             try {
-                roomService.createRoom("General Chat", "Global discussion for everyone.", 
-                    com.connecthub.room.entity.Room.RoomType.GROUP, "system", "System", false);
+                boolean exists = roomService.getAllRooms().stream()
+                        .anyMatch(r -> "General Chat".equalsIgnoreCase(r.getName()));
+                if (!exists) {
+                    roomService.createRoom("General Chat", "Global discussion for everyone.",
+                            com.connecthub.room.entity.Room.RoomType.GROUP, "system", "System", false);
+                }
             } catch (Exception e) {
-                // Already exists or other error
+                // Error seeding
             }
         };
     }

@@ -16,6 +16,8 @@ public class RoomMember {
     private String roomId;
     private String userId;
     private String username;
+    private String fullName;
+    private String avatarUrl;
 
     @Enumerated(EnumType.STRING)
     private MemberRole role = MemberRole.MEMBER;

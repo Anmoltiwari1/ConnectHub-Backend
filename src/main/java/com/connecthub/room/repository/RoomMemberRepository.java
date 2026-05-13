@@ -11,5 +11,11 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, String> 
     List<RoomMember> findByRoomId(String roomId);
     Optional<RoomMember> findByUserIdAndRoomId(String userId, String roomId);
     long countByRoomId(String roomId);
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
     void deleteByUserIdAndRoomId(String userId, String roomId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByRoomId(String roomId);
 }
