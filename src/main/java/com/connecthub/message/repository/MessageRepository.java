@@ -13,8 +13,7 @@ import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<Message, String> {
 
-    Optional<Message> findByMessageId(String messageId);
-    Page<Message> findByRoomIdOrderBySentAtDesc(String roomId, Pageable pageable);
+    Page<Message> findByRoomIdOrderBySentAtAsc(String roomId, Pageable pageable);
     List<Message> findBySenderId(String senderId);
     List<Message> findByRoomIdAndSentAtAfter(String roomId, LocalDateTime after);
 
@@ -23,5 +22,11 @@ public interface MessageRepository extends JpaRepository<Message, String> {
 
     long countByRoomId(String roomId);
     long countByRoomIdAndSentAtAfter(String roomId, LocalDateTime after);
-    void deleteByMessageId(String messageId);
+
+    List<Message> findByRoomIdAndSentAtBefore(String roomId, LocalDateTime before);
+    List<Message> findByRoomIdAndContentContainingIgnoreCase(String roomId, String content);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByRoomId(String roomId);
 }

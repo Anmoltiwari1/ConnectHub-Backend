@@ -1,5 +1,6 @@
 package com.connecthub.message.resource;
 
+import com.connecthub.message.dto.SendMessageRequest;
 import com.connecthub.message.entity.Message;
 import com.connecthub.message.entity.Message.DeliveryStatus;
 import com.connecthub.message.entity.Message.MessageType;
@@ -21,11 +22,21 @@ public class MessageResource {
     private final MessageService messageService;
 
     @PostMapping
-    public ResponseEntity<Message> sendMessage(@RequestBody Map<String, String> req) {
-        return ResponseEntity.ok(messageService.sendMessage(
-                req.get("roomId"), req.get("senderId"), req.get("content"),
-                MessageType.valueOf(req.getOrDefault("type", "TEXT")),
-                req.get("mediaUrl"), req.get("replyToMessageId")));
+    public ResponseEntity<Message> sendMessage(@RequestBody Map<String, Object> req) {
+        SendMessageRequest request = SendMessageRequest.builder()
+                .messageId((String) req.get("messageId"))
+                .roomId((String) req.get("roomId"))
+                .senderId((String) req.get("senderId"))
+                .senderUsername((String) req.get("senderUsername"))
+                .senderFullName((String) req.get("senderFullName"))
+                .senderAvatarUrl((String) req.get("senderAvatarUrl"))
+                .content((String) req.get("content"))
+                .type(req.get("type") != null ? MessageType.valueOf(req.get("type").toString()) : MessageType.TEXT)
+                .mediaUrl((String) req.get("mediaUrl"))
+                .replyToMessageId((String) req.get("replyToMessageId"))
+                .build();
+        
+        return ResponseEntity.ok(messageService.sendMessage(request));
     }
 
     @GetMapping("/{messageId}")
@@ -49,6 +60,11 @@ public class MessageResource {
     public ResponseEntity<Void> deleteMessage(@PathVariable String messageId, @RequestParam String deleterId) {
         messageService.deleteMessage(messageId, deleterId);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{messageId}/pin")
+    public ResponseEntity<Message> pinMessage(@PathVariable String messageId, @RequestParam boolean isPinned) {
+        return ResponseEntity.ok(messageService.pinMessage(messageId, isPinned));
     }
 
     @GetMapping("/room/{roomId}/search")
@@ -86,6 +102,12 @@ public class MessageResource {
     @PutMapping("/room/{roomId}/read")
     public ResponseEntity<Void> markRoomRead(@PathVariable String roomId, @RequestParam String upToMessageId) {
         messageService.markRoomAsRead(roomId, upToMessageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/room/{roomId}")
+    public ResponseEntity<Void> deleteMessagesByRoom(@PathVariable String roomId) {
+        messageService.deleteMessagesByRoom(roomId);
         return ResponseEntity.ok().build();
     }
 }

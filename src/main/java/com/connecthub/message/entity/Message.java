@@ -15,6 +15,9 @@ public class Message {
 
     private String roomId;
     private String senderId;
+    private String senderUsername;
+    private String senderFullName;
+    private String senderAvatarUrl;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -24,8 +27,14 @@ public class Message {
 
     private String mediaUrl;
     private String replyToMessageId;
+    @com.fasterxml.jackson.annotation.JsonProperty("isEdited")
     private boolean isEdited = false;
+
+    @com.fasterxml.jackson.annotation.JsonProperty("isDeleted")
     private boolean isDeleted = false;
+
+    @com.fasterxml.jackson.annotation.JsonProperty("isPinned")
+    private boolean isPinned = false;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus = DeliveryStatus.SENT;
@@ -42,7 +51,7 @@ public class Message {
     }
 
     public enum MessageType {
-        TEXT, IMAGE, VIDEO, FILE, REACTION, SYSTEM
+        TEXT, IMAGE, VIDEO, FILE, REACTION, SYSTEM, CHAT_MESSAGE
     }
 
     public enum DeliveryStatus {

@@ -1,5 +1,6 @@
 package com.connecthub.message.service;
 
+import com.connecthub.message.dto.SendMessageRequest;
 import com.connecthub.message.entity.Message;
 import com.connecthub.message.entity.Message.DeliveryStatus;
 import com.connecthub.message.entity.Message.MessageType;
@@ -11,12 +12,12 @@ import java.util.List;
 
 public interface MessageService {
 
-    Message sendMessage(String roomId, String senderId, String content, MessageType type,
-                        String mediaUrl, String replyToMessageId);
+    Message sendMessage(SendMessageRequest request);
     Message getMessageById(String messageId);
     Page<Message> getMessagesByRoom(String roomId, Pageable pageable);
     List<Message> getMessagesBefore(String roomId, LocalDateTime before);
     Message editMessage(String messageId, String editorId, String newContent);
+    Message pinMessage(String messageId, boolean isPinned);
     void deleteMessage(String messageId, String deleterId);
     List<Message> searchMessages(String roomId, String keyword);
     Message updateDeliveryStatus(String messageId, DeliveryStatus status);
@@ -26,4 +27,6 @@ public interface MessageService {
     Message addReaction(String messageId, String userId, String emoji);
     void markRoomAsDelivered(String roomId);
     void markRoomAsRead(String roomId, String upToMessageId);
+    Message saveMessageWithId(String messageId, SendMessageRequest request);
+    void deleteMessagesByRoom(String roomId);
 }
