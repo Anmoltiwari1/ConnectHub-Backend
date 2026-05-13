@@ -19,7 +19,12 @@ public interface PresenceRepository extends JpaRepository<UserPresence, String> 
     @Query("SELECT p FROM UserPresence p WHERE p.status = 'ONLINE'")
     List<UserPresence> findOnlineUsers();
 
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
     void deleteByUserId(String userId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
     void deleteBySessionId(String sessionId);
 
     @Query("SELECT p FROM UserPresence p WHERE p.lastPingAt < :threshold")
