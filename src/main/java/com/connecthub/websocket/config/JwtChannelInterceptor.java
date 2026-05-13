@@ -43,14 +43,13 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                             .parseClaimsJws(token)
                             .getBody();
                     
-                    String username = claims.get("username", String.class);
                     String userId = claims.getSubject();
                     
-                    if (username != null) {
-                        accessor.setUser(new UsernamePasswordAuthenticationToken(username, null, null));
-                        log.info("STOMP session authenticated for user: {}", username);
+                    if (userId != null) {
+                        accessor.setUser(new UsernamePasswordAuthenticationToken(userId, null, null));
+                        log.info("STOMP session authenticated for user ID: {}", userId);
                     } else {
-                        log.warn("STOMP JWT valid but missing 'username' claim");
+                        log.warn("STOMP JWT valid but missing 'sub' (userId) claim");
                     }
                 } catch (Exception e) {
                     log.error("STOMP JWT Validation failed for token: {} - Error: {}", token.substring(0, Math.min(token.length(), 10)) + "...", e.getMessage());

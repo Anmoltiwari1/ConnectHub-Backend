@@ -33,8 +33,8 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination();
         
-        if (destination != null && destination.startsWith("/topic/room/")) {
-            String roomId = destination.replace("/topic/room/", "");
+        if (destination != null && destination.startsWith(StompMessageHandler.TOPIC_ROOM)) {
+            String roomId = destination.replace(StompMessageHandler.TOPIC_ROOM, "");
             String username = headerAccessor.getUser() != null ? headerAccessor.getUser().getName() : "Anonymous";
             String sessionId = headerAccessor.getSessionId();
             
@@ -49,7 +49,7 @@ public class WebSocketEventListener {
                     .content(username + " joined the room")
                     .build();
             
-            messagingTemplate.convertAndSend("/topic/room/" + roomId, joinPayload);
+            messagingTemplate.convertAndSend(StompMessageHandler.TOPIC_ROOM + roomId, joinPayload);
 
             // Notify Presence Service
             try {
@@ -88,7 +88,7 @@ public class WebSocketEventListener {
                     .content(username + " left the room")
                     .build();
             
-            messagingTemplate.convertAndSend("/topic/room/" + roomId, leavePayload);
+            messagingTemplate.convertAndSend(StompMessageHandler.TOPIC_ROOM + roomId, leavePayload);
         }
         
         // Notify Presence Service offline

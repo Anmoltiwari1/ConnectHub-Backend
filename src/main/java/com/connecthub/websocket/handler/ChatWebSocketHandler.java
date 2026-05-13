@@ -26,8 +26,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         log.debug("Received raw WebSocket message from {}: {}", session.getId(), message.getPayload());
-        // Standard STOMP messages are handled by the broker; 
-        // This handler can be used for custom low-level logic if needed.
     }
 
     @Override
