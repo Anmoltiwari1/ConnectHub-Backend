@@ -171,7 +171,7 @@ sequenceDiagram
     autonumber
     actor Client as 📱 Frontend Client
     participant Auth as 🔐 Auth Service
-    database DB as 🐬 MySQL (Users DB)
+    participant DB as 🐬 MySQL (Users DB)
 
     rect rgb(240, 248, 255)
         note right of Client: User Registration Flow
@@ -219,7 +219,7 @@ sequenceDiagram
     autonumber
     actor Client as 📱 Frontend Client
     participant Room as 💬 Room Service
-    database DB as 🐬 MySQL (Rooms DB)
+    participant DB as 🐬 MySQL (Rooms DB)
 
     rect rgb(240, 248, 255)
         note right of Client: Room Creation Flow
@@ -253,7 +253,7 @@ sequenceDiagram
     participant WS as 🔌 WebSocket Handler
     participant RMQ as 🐇 RabbitMQ Broker
     participant MsgSvc as 📜 Message Service
-    database DB as 🐬 MySQL (Messages DB)
+    participant DB as 🐬 MySQL (Messages DB)
     actor UserB as 📱 User B (Recipient)
 
     rect rgb(240, 248, 255)
@@ -304,7 +304,7 @@ sequenceDiagram
     actor Client as 📱 Frontend Client
     participant Media as 📁 Media Service
     participant Storage as ☁️ Local Uploads / S3
-    database DB as 🐬 MySQL (Media Metadata DB)
+    participant DB as 🐬 MySQL (Media Metadata DB)
 
     Client->>Media: POST /api/media/upload (Multipart File + Type)
     activate Media
@@ -376,7 +376,7 @@ sequenceDiagram
     autonumber
     participant RMQ as 🐇 RabbitMQ Broker
     participant Notif as 🔔 Notification Service
-    database DB as 🐬 MySQL (Notifications DB)
+    participant DB as 🐬 MySQL (Notifications DB)
     participant Gmail as 📧 Gmail SMTP Server
     actor User as 📱 Offline User
 
