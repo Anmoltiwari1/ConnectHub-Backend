@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectHub Unified API Hub</title>
+    
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Swagger UI CSS CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.25);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.15);
+            --accent: #a855f7;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-dim: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--bg-color);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(168, 85, 247, 0.06) 0px, transparent 50%);
+            background-attachment: fixed;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Glassmorphic Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-section h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo-section p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Interactive Service Selector Controls */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .controls label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .service-select {
+            appearance: none;
+            background: #111827;
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            color: #fff;
+            padding: 0.75rem 2.5rem 0.75rem 1.25rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .service-select:focus {
+            box-shadow: 0 0 25px var(--primary-glow);
+            border-color: #818cf8;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            font-size: 0.7rem;
+            color: var(--primary);
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .status-hub {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            background: rgba(17, 24, 39, 0.4);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .status-badge:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .status-name {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .status-port {
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Swagger Wrapper Custom Styling & Dark Theme Override */
+        .swagger-wrapper {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        /* Dark Mode Override for Swagger UI Elements */
+        .swagger-ui {
+            filter: invert(88%) hue-rotate(180deg);
+        }
+        .swagger-ui .info,
+        .swagger-ui .scheme-container,
+        .swagger-ui .opblock,
+        .swagger-ui .dialog-ux .modal-ux {
+            filter: invert(0%) hue-rotate(0deg) !important;
+        }
+        
+        /* Premium custom styling on top of invert trick for a sleek cyberpunk-dark feel */
+        .swagger-ui {
+            background-color: transparent !important;
+        }
+        .swagger-ui .info .title {
+            font-family: 'Outfit', sans-serif !important;
+            color: #0b0f19 !important;
+            font-weight: 800 !important;
+            letter-spacing: -0.5px;
+        }
+        .swagger-ui .scheme-container {
+            background: rgba(255, 255, 255, 0.8) !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+            border-radius: 12px !important;
+            border: 1px solid rgba(0,0,0,0.05) !important;
+            margin: 1.5rem 0 !important;
+            padding: 1rem !important;
+        }
+        .swagger-ui .opblock-tag {
+            font-family: 'Outfit', sans-serif !important;
+            border-bottom: 2px solid #6366f1 !important;
+            padding-bottom: 0.5rem;
+        }
+
+        .info-card {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-card strong {
+            color: var(--text-main);
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header Dashboard -->
+    <header>
+        <div class="logo-section">
+            <h1>ConnectHub API Hub</h1>
+            <p>Unified API interactive documentation with local service testing capability</p>
+        </div>
+        <div class="controls">
+            <label for="service-selector">Select Microservice Docs:</label>
+            <div class="select-wrapper">
+                <select id="service-selector" class="service-select" onchange="switchService(this.value)">
+                    <option value="auth">Auth Service (Port 8081)</option>
+                    <option value="room">Room Service (Port 8082)</option>
+                    <option value="message">Message Service (Port 8083)</option>
+                    <option value="media">Media Service (Port 8084)</option>
+                    <option value="presence">Presence Service (Port 8085)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Info Notice Box -->
+    <div class="info-card">
+        <span class="info-icon">💡</span>
+        <div>
+            <strong>Zero Code Modifications Mode:</strong> This documentation is running externally without adding libraries or configurations to your Spring Boot microservices. To test the API calls interactively, launch your local microservices and click the <strong>Authorize</strong> padlock button in Swagger to enter your token.
+        </div>
+    </div>
+
+    <!-- Active Port Status Badges -->
+    <div class="status-hub">
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span class="status-name">Auth Service</span>
+            <span class="status-port">:8081</span>
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span class="status-name">Room Service</span>
+            <span class="status-port">:8082</span>
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span class="status-name">Message Service</span>
+            <span class="status-port">:8083</span>
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span class="status-name">Media Service</span>
+            <span class="status-port">:8084</span>
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span class="status-name">Presence Service</span>
+            <span class="status-port">:8085</span>
+        </div>
+    </div>
+
+    <!-- Swagger UI Render Target Wrapper -->
+    <div class="swagger-wrapper">
+        <div id="swagger-ui"></div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 ConnectHub API Dashboard. Made with premium design aesthetics.
+</footer>
+
+<!-- Swagger UI Bundle JS CDN -->
+<script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
+
+<script>
+    // ==========================================
+    // 📖 EMBEDDED OPENAPI 3.0 SPECIFICATIONS
+    // ==========================================
+
+    const specs = {
+        // --- 🔑 AUTH SERVICE ---
+        auth: {
+            openapi: "3.0.0",
+            info: {
+                title: "ConnectHub Auth Service API",
+                version: "1.0.0",
+                description: "Manages user registrations, logins, credentials, avatars, and statuses."
+            },
+            servers: [{ url: "http://localhost:8081", description: "Local Development Server" }],
+            paths: {
+                "/auth/register": {
+                    post: {
+                        tags: ["Authentication"],
+                        summary: "Register new user",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            username: { type: "string", example: "testuser" },
+                                            email: { type: "string", example: "test@example.com" },
+                                            password: { type: "string", example: "password123" },
+                                            fullName: { type: "string", example: "Test User" }
+                                        },
+                                        required: ["username", "email", "password", "fullName"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Successful Registration" }
+                        }
+                    }
+                },
+                "/auth/login": {
+                    post: {
+                        tags: ["Authentication"],
+                        summary: "Login user & fetch JWT tokens",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            email: { type: "string", example: "test@example.com" },
+                                            password: { type: "string", example: "password123" }
+                                        },
+                                        required: ["email", "password"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Successful Login with JWT response payload" }
+                        }
+                    }
+                },
+                "/auth/logout": {
+                    post: {
+                        tags: ["Authentication"],
+                        summary: "Logout user session",
+                        parameters: [
+                            { name: "userId", in: "query", required: true, schema: { type: "string" }, example: "user-123" }
+                        ],
+                        responses: {
+                            "200": { description: "Log out successful" }
+                        }
+                    }
+                },
+                "/auth/profile": {
+                    get: {
+                        tags: ["User Profile"],
+                        summary: "Fetch User Profile Data",
+                        security: [{ bearerAuth: [] }],
+                        parameters: [
+                            { name: "userId", in: "query", required: true, schema: { type: "string" }, example: "user-123" }
+                        ],
+                        responses: {
+                            "200": { description: "User Profile details" }
+                        }
+                    },
+                    put: {
+                        tags: ["User Profile"],
+                        summary: "Update user profile metrics",
+                        security: [{ bearerAuth: [] }],
+                        parameters: [
+                            { name: "userId", in: "query", required: true, schema: { type: "string" } }
+                        ],
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            fullName: { type: "string", example: "Test User Jr." },
+                                            username: { type: "string", example: "testuser2" },
+                                            avatarUrl: { type: "string", example: "https://example.com/avatar.png" },
+                                            bio: { type: "string", example: "ConnectHub developer enthusiast!" }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "User profile updated successfully" }
+                        }
+                    }
+                },
+                "/auth/password": {
+                    put: {
+                        tags: ["User Profile"],
+                        summary: "Update password security credentials",
+                        security: [{ bearerAuth: [] }],
+                        parameters: [
+                            { name: "userId", in: "query", required: true, schema: { type: "string" } }
+                        ],
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            currentPassword: { type: "string" },
+                                            newPassword: { type: "string" }
+                                        },
+                                        required: ["currentPassword", "newPassword"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Password updated successfully" }
+                        }
+                    }
+                },
+                "/auth/search": {
+                    get: {
+                        tags: ["Search & Discovery"],
+                        summary: "Search system users",
+                        security: [{ bearerAuth: [] }],
+                        parameters: [
+                            { name: "query", in: "query", required: true, schema: { type: "string" }, example: "test" }
+                        ],
+                        responses: {
+                            "200": { description: "List of matched users" }
+                        }
+                    }
+                },
+                "/auth/status": {
+                    put: {
+                        tags: ["User Status"],
+                        summary: "Update account user status",
+                        security: [{ bearerAuth: [] }],
+                        parameters: [
+                            { name: "userId", in: "query", required: true, schema: { type: "string" } },
+                            { name: "status", in: "query", required: true, schema: { type: "string", enum: ["ONLINE", "OFFLINE", "AWAY"] } }
+                        ],
+                        responses: {
+                            "200": { description: "Status changed successfully" }
+                        }
+                    }
+                },
+                "/auth/refresh": {
+                    post: {
+                        tags: ["Authentication"],
+                        summary: "Refresh access tokens",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            refreshToken: { type: "string" }
+                                        },
+                                        required: ["refreshToken"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Refreshed access token successfully" }
+                        }
+                    }
+                }
+            },
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: "http",
+                        scheme: "bearer",
+                        bearerFormat: "JWT"
+                    }
+                }
+            }
+        },
+
+        // --- 💬 ROOM SERVICE ---
+        room: {
+            openapi: "3.0.0",
+            info: {
+                title: "ConnectHub Room Service API",
+                version: "1.0.0",
+                description: "Manages discussion groups, channels, unread counters, and group memberships."
+            },
+            servers: [{ url: "http://localhost:8082", description: "Local Development Server" }],
+            paths: {
+                "/rooms": {
+                    post: {
+                        tags: ["Room Management"],
+                        summary: "Create new Room",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            name: { type: "string", example: "General Chat" },
+                                            description: { type: "string", example: "Public discussion room" },
+                                            type: { type: "string", enum: ["PUBLIC", "PRIVATE", "DIRECT"], example: "PUBLIC" },
+                                            createdById: { type: "string", example: "user-123" },
+                                            creatorName: { type: "string", example: "testuser" },
+                                            isPrivate: { type: "boolean", example: false }
+                                        },
+                                        required: ["name", "type", "createdById"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Room created successfully" }
+                        }
+                    },
+                    get: {
+                        tags: ["Room Management"],
+                        summary: "Get all public rooms",
+                        responses: {
+                            "200": { description: "Rooms fetched successfully" }
+                        }
+                    }
+                },
+                "/rooms/{roomId}": {
+                    get: {
+                        tags: ["Room Management"],
+                        summary: "Get Room details by ID",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Room details fetched" }
+                        }
+                    },
+                    put: {
+                        tags: ["Room Management"],
+                        summary: "Update Room metrics",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            name: { type: "string", example: "General Updated" },
+                                            description: { type: "string", example: "New Room details description" },
+                                            avatarUrl: { type: "string", example: "https://example.com/avatar.png" },
+                                            maxMembers: { type: "integer", example: 100 }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Room updated successfully" }
+                        }
+                    },
+                    delete: {
+                        tags: ["Room Management"],
+                        summary: "Delete a Room and all associated memberships",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Room deleted successfully" }
+                        }
+                    }
+                },
+                "/rooms/user/{userId}": {
+                    get: {
+                        tags: ["Room Management"],
+                        summary: "Get all active rooms a user is member of",
+                        parameters: [
+                            { name: "userId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "User room lists retrieved" }
+                        }
+                    }
+                },
+                "/rooms/{roomId}/members": {
+                    post: {
+                        tags: ["Member Operations"],
+                        summary: "Add a member to Room",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            userId: { type: "string", example: "user-456" },
+                                            username: { type: "string", example: "roommate" },
+                                            fullName: { type: "string", example: "Room Mate" },
+                                            avatarUrl: { type: "string" },
+                                            role: { type: "string", enum: ["ADMIN", "MODERATOR", "MEMBER"], example: "MEMBER" }
+                                        },
+                                        required: ["userId", "username"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Member added successfully" }
+                        }
+                    },
+                    get: {
+                        tags: ["Member Operations"],
+                        summary: "Get member list for a Room",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Members listed successfully" }
+                        }
+                    }
+                },
+                "/rooms/{roomId}/members/{userId}": {
+                    delete: {
+                        tags: ["Member Operations"],
+                        summary: "Remove member from a Room",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "userId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Member removed successfully" }
+                        }
+                    }
+                },
+                "/rooms/{roomId}/members/{userId}/role": {
+                    put: {
+                        tags: ["Member Operations"],
+                        summary: "Modify role of room member",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "userId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "role", in: "query", required: true, schema: { type: "string", enum: ["ADMIN", "MODERATOR", "MEMBER"] } }
+                        ],
+                        responses: {
+                            "200": { description: "Role updated" }
+                        }
+                    }
+                },
+                "/rooms/{roomId}/members/{userId}/mute": {
+                    put: {
+                        tags: ["Member Operations"],
+                        summary: "Mute or Unmute a room member",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "userId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "mute", in: "query", required: true, schema: { type: "boolean" } }
+                        ],
+                        responses: {
+                            "200": { description: "Member muting status updated" }
+                        }
+                    }
+                },
+                "/rooms/{roomId}/unread/{userId}": {
+                    get: {
+                        tags: ["Notification Controls"],
+                        summary: "Get unread message count for user in Room",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "userId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Number of unread messages" }
+                        }
+                    }
+                },
+                "/rooms/{roomId}/read/{userId}": {
+                    post: {
+                        tags: ["Notification Controls"],
+                        summary: "Mark Room as fully read by User",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "userId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Room marked as read successfully" }
+                        }
+                    }
+                }
+            }
+        },
+
+        // --- ✉️ MESSAGE SERVICE ---
+        message: {
+            openapi: "3.0.0",
+            info: {
+                title: "ConnectHub Message Service API",
+                version: "1.0.0",
+                description: "Manages Chat messaging histories, reactions, pinning, read receipts, and delivery statuses."
+            },
+            servers: [{ url: "http://localhost:8083", description: "Local Development Server" }],
+            paths: {
+                "/messages": {
+                    post: {
+                        tags: ["Messages Engine"],
+                        summary: "Send or save a message",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            messageId: { type: "string", example: "msg-999" },
+                                            roomId: { type: "string", example: "room-abc" },
+                                            senderId: { type: "string", example: "user-123" },
+                                            senderUsername: { type: "string", example: "testuser" },
+                                            senderFullName: { type: "string", example: "Test User" },
+                                            senderAvatarUrl: { type: "string" },
+                                            content: { type: "string", example: "Hello from ConnectHub Unified Hub!" },
+                                            type: { type: "string", enum: ["TEXT", "IMAGE", "FILE", "SYSTEM"], example: "TEXT" },
+                                            mediaUrl: { type: "string" },
+                                            replyToMessageId: { type: "string" }
+                                        },
+                                        required: ["roomId", "senderId", "content"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Message saved/delivered successfully" }
+                        }
+                    }
+                },
+                "/messages/{messageId}": {
+                    get: {
+                        tags: ["Messages Engine"],
+                        summary: "Get specific message details by ID",
+                        parameters: [
+                            { name: "messageId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Message payload" }
+                        }
+                    },
+                    put: {
+                        tags: ["Messages Engine"],
+                        summary: "Edit existing message text",
+                        parameters: [
+                            { name: "messageId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            editorId: { type: "string", example: "user-123" },
+                                            newContent: { type: "string", example: "Edited dynamic content" }
+                                        },
+                                        required: ["editorId", "newContent"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Message modified successfully" }
+                        }
+                    },
+                    delete: {
+                        tags: ["Messages Engine"],
+                        summary: "Delete message",
+                        parameters: [
+                            { name: "messageId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "deleterId", in: "query", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Message deleted" }
+                        }
+                    }
+                },
+                "/messages/room/{roomId}": {
+                    get: {
+                        tags: ["History & Search"],
+                        summary: "Fetch Room message history pages",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "page", in: "query", required: false, schema: { type: "integer", default: 0 } },
+                            { name: "size", in: "query", required: false, schema: { type: "integer", default: 50 } }
+                        ],
+                        responses: {
+                            "200": { description: "Pagination list of messages" }
+                        }
+                    },
+                    delete: {
+                        tags: ["History & Search"],
+                        summary: "Clear all message histories of a Room",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Room history wiped successfully" }
+                        }
+                    }
+                },
+                "/messages/{messageId}/pin": {
+                    put: {
+                        tags: ["Features & Interaction"],
+                        summary: "Pin or unpin message",
+                        parameters: [
+                            { name: "messageId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "isPinned", in: "query", required: true, schema: { type: "boolean" } }
+                        ],
+                        responses: {
+                            "200": { description: "Pinning state updated" }
+                        }
+                    }
+                },
+                "/messages/room/{roomId}/search": {
+                    get: {
+                        tags: ["History & Search"],
+                        summary: "Search messages within a Room by keyword",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "keyword", in: "query", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Matched message lists" }
+                        }
+                    }
+                },
+                "/messages/{messageId}/status": {
+                    put: {
+                        tags: ["Read Receipts"],
+                        summary: "Update message delivery/read status",
+                        parameters: [
+                            { name: "messageId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "status", in: "query", required: true, schema: { type: "string", enum: ["SENT", "DELIVERED", "READ"] } }
+                        ],
+                        responses: {
+                            "200": { description: "Message delivery status updated" }
+                        }
+                    }
+                },
+                "/messages/room/{roomId}/count": {
+                    get: {
+                        tags: ["History & Search"],
+                        summary: "Get total count of messages in Room",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Message count value" }
+                        }
+                    }
+                },
+                "/messages/room/{roomId}/unread": {
+                    get: {
+                        tags: ["Read Receipts"],
+                        summary: "Get unread messages since optional timestamp",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "since", in: "query", required: false, schema: { type: "string" }, description: "ISO timestamp" }
+                        ],
+                        responses: {
+                            "200": { description: "Unread count" }
+                        }
+                    }
+                },
+                "/messages/{messageId}/reactions": {
+                    post: {
+                        tags: ["Features & Interaction"],
+                        summary: "Add emoji reaction to message",
+                        parameters: [
+                            { name: "messageId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            userId: { type: "string", example: "user-123" },
+                                            emoji: { type: "string", example: "👍" }
+                                        },
+                                        required: ["userId", "emoji"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Reaction added" }
+                        }
+                    }
+                },
+                "/messages/room/{roomId}/delivered": {
+                    put: {
+                        tags: ["Read Receipts"],
+                        summary: "Mark all messages in Room as delivered",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "All room messages marked delivered" }
+                        }
+                    }
+                },
+                "/messages/room/{roomId}/read": {
+                    put: {
+                        tags: ["Read Receipts"],
+                        summary: "Mark all messages in Room as read up to a message",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } },
+                            { name: "upToMessageId", in: "query", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Room messages marked as read successfully" }
+                        }
+                    }
+                }
+            }
+        },
+
+        // --- 📁 MEDIA SERVICE ---
+        media: {
+            openapi: "3.0.0",
+            info: {
+                title: "ConnectHub Media Service API",
+                version: "1.0.0",
+                description: "Manages file attachments, profile dynamic updates, and Amazon S3 storage mappings."
+            },
+            servers: [{ url: "http://localhost:8084", description: "Local Development Server" }],
+            paths: {
+                "/media/upload/file": {
+                    post: {
+                        tags: ["Dynamic Uploads"],
+                        summary: "Upload raw files to Room storage",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "multipart/form-data": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            file: { type: "string", format: "binary" },
+                                            uploaderId: { type: "string" },
+                                            roomId: { type: "string" }
+                                        },
+                                        required: ["file", "uploaderId", "roomId"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "File uploaded successfully" }
+                        }
+                    }
+                },
+                "/media/upload/image": {
+                    post: {
+                        tags: ["Dynamic Uploads"],
+                        summary: "Upload images (compressed and optimized via Thumbnailator)",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "multipart/form-data": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            image: { type: "string", format: "binary" },
+                                            uploaderId: { type: "string" },
+                                            roomId: { type: "string" }
+                                        },
+                                        required: ["image", "uploaderId", "roomId"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "Image compressed & uploaded successfully" }
+                        }
+                    }
+                },
+                "/media/{mediaId}": {
+                    get: {
+                        tags: ["Metadata Query"],
+                        summary: "Get file metadata by ID",
+                        parameters: [
+                            { name: "mediaId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Media record details" }
+                        }
+                    },
+                    delete: {
+                        tags: ["Dynamic Uploads"],
+                        summary: "Delete file from storage and records",
+                        parameters: [
+                            { name: "mediaId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "File deleted" }
+                        }
+                    }
+                },
+                "/media/room/{roomId}": {
+                    get: {
+                        tags: ["Metadata Query"],
+                        summary: "Get all uploaded media records of a Room",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "List of files in room" }
+                        }
+                    }
+                },
+                "/media/uploader/{uploaderId}": {
+                    get: {
+                        tags: ["Metadata Query"],
+                        summary: "Get all files uploaded by a specific user",
+                        parameters: [
+                            { name: "uploaderId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "List of files uploaded by user" }
+                        }
+                    }
+                },
+                "/media/room/{roomId}/count": {
+                    get: {
+                        tags: ["Metadata Query"],
+                        summary: "Get count of media elements in Room",
+                        parameters: [
+                            { name: "roomId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "Total count of records" }
+                        }
+                    }
+                },
+                "/media": {
+                    get: {
+                        tags: ["Metadata Query"],
+                        summary: "Fetch all media file records of the network",
+                        responses: {
+                            "200": { description: "Comprehensive metadata database listing" }
+                        }
+                    }
+                }
+            }
+        },
+
+        // --- 🟢 PRESENCE SERVICE ---
+        presence: {
+            openapi: "3.0.0",
+            info: {
+                title: "ConnectHub Presence Service API",
+                version: "1.0.0",
+                description: "Manages real-time active user states, devices, and connection details."
+            },
+            servers: [{ url: "http://localhost:8085", description: "Local Development Server" }],
+            paths: {
+                "/presence/online": {
+                    post: {
+                        tags: ["Presence Engine"],
+                        summary: "Set User as Online",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        type: "object",
+                                        properties: {
+                                            userId: { type: "string", example: "user-123" },
+                                            username: { type: "string", example: "testuser" },
+                                            sessionId: { type: "string", example: "session-xyz" },
+                                            deviceType: { type: "string", example: "DESKTOP" },
+                                            ipAddress: { type: "string", example: "127.0.0.1" }
+                                        },
+                                        required: ["userId", "username", "sessionId"]
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "200": { description: "User successfully registered as online" }
+                        }
+                    },
+                    get: {
+                        tags: ["Status Analytics"],
+                        summary: "List all online users on the platform",
+                        responses: {
+                            "200": { description: "Active users array details" }
+                        }
+                    }
+                },
+                "/presence/offline/{userId}": {
+                    post: {
+                        tags: ["Presence Engine"],
+                        summary: "Set User as Offline",
+                        parameters: [
+                            { name: "userId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "User successfully deregistered to offline" }
+                        }
+                    }
+                },
+                "/presence/user/{userId}": {
+                    get: {
+                        tags: ["Status Analytics"],
+                        summary: "Get presence analytics data of a user",
+                        parameters: [
+                            { name: "userId", in: "path", required: true, schema: { type: "string" } }
+                        ],
+                        responses: {
+                            "200": { description: "User Presence metrics" }
+                        }
+                    }
+                },
+                "/presence/count": {
+                    get: {
+                        tags: ["Status Analytics"],
+                        summary: "Get count of online users",
+                        responses: {
+                            "200": { description: "Count of online connections" }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    // ==========================================
+    // ⚙️ INITIALIZATION & DYNAMIC SWITCHING
+    // ==========================================
+    
+    let ui;
+
+    function initSwagger(serviceKey) {
+        const spec = specs[serviceKey];
+        
+        // Destroy existing instance if active
+        if (ui) {
+            document.getElementById('swagger-ui').innerHTML = '';
+        }
+
+        ui = SwaggerUIBundle({
+            spec: spec,
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.SwaggerUIStandalonePreset
+            ],
+            layout: "BaseLayout",
+            persistAuthorization: true
+        });
+    }
+
+    function switchService(serviceKey) {
+        initSwagger(serviceKey);
+    }
+
+    // Default initialization with 'auth'
+    window.onload = function() {
+        initSwagger('auth');
+    };
+</script>
+</body>
+</html>
