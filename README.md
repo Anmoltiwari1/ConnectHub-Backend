@@ -149,9 +149,9 @@ graph TD
     PresenceAPI -->|Publish Status Events| RabbitMQ
     RoomAPI -->|Publish Room Events| RabbitMQ
 
-    RabbitMQ -->|Consume (Broadcast to Users)| WS
-    RabbitMQ -->|Consume (Trigger Alerts)| NotificationWorker
-    RabbitMQ -->|Consume (Persist Data)| MessageAPI
+    RabbitMQ -->|Consume - Broadcast to Users| WS
+    RabbitMQ -->|Consume - Trigger Alerts| NotificationWorker
+    RabbitMQ -->|Consume - Persist Data| MessageAPI
 ```
 
 ---
